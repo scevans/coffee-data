@@ -2,7 +2,6 @@
 ### How does the espresso machine vary in the volume of
 ### coffee it dispenses for a single "large" cup?
 
-setwd("/home/sam/Dropbox")
 library(ggplot2)
 df <- read.csv("coffee-data.csv")
 
@@ -74,6 +73,7 @@ dev.off()
 {
 df$workday <- factor(df$workday)
 
+# generate violin plot with points overlayed
 vol.workday <- ggplot(df, aes(workday, volume)) +
   geom_violin() +
   geom_point() +
@@ -82,6 +82,8 @@ vol.workday <- ggplot(df, aes(workday, volume)) +
   theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
   coord_cartesian(ylim=c(min(df$volume)-5,max(df$volume)+30)) +
   theme_bw()
+
+# add sample sizes for weekdays and weekends
 vol.workday <- vol.workday +
   geom_text(aes(x="Mon-Fri",y=max(df$volume)+15,
                 label=paste("n == ", length(df$workday[which(df$workday%in%"Mon-Fri")]))),
@@ -89,11 +91,16 @@ vol.workday <- vol.workday +
   geom_text(aes(x="Sat-Sun",y=max(df$volume)+15,
                 label=paste("n == ", length(df$workday[which(df$workday%in%"Sat-Sun")]))),
             parse=TRUE,hjust=0.5,vjust=0,size=5)
+
+# add layer highlighting points where espresso machine needed to
+# "warm up" before dispensing coffee
 vol.workday <- vol.workday +
-  geom_point(data=df[length(df$duration),],color="red",size=2.5)
-#  geom_point(data=df[22,],color="red",size=2.5)
+  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5)
+
+# print plot in R window
 vol.workday
 
+# save plot to file as .jpeg
 jpeg("coffee-volume-by-workday.jpeg", width=7, height=5, units="in", res=300)
 print(vol.workday)
 dev.off()
