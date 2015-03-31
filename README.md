@@ -8,12 +8,21 @@ A long-standing question among coffee co-op patrons has been why the espresso ma
 # coffee-data.csv variables
 
 **duration** = the amount of time (in seconds) the machine takes to dispense a single "large" coffee
+
 **height** = Using the same mug every time, I measure the height (in mm) of the coffee in my mug
+
 **volume** = volume of coffee (in ml), calculated from height assuming my mug is a perfect cylinder (which it effectively is--hooray geometry!)
+
 **rate** = volume divided by duration
+
 **day** = day of the week (mon-sun)	
+
 **date** = date, in DD MMM YYYY format
+
 **time** = time at which coffee was dispensed, to the nearest 5 min, in HH:MM
+
 **workday** = binary, whether coffee was dispensed during a work day (mon thru fri) or a weekend (sat-sun)	
+
 **warmup** = binary, whether the espresso machine had to "warm up" before dispensing coffee (i.e. if it hadn't been used in several hours)	
+
 **X** = notes, comments	
