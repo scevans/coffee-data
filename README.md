@@ -23,6 +23,12 @@ A long-standing question among coffee co-op patrons has been why the espresso ma
 
 **workday** = binary, whether coffee was dispensed during a work day (mon thru fri) or a weekend (sat-sun)	
 
-**warmup** = binary, whether the espresso machine had to "warm up" before dispensing coffee (i.e. if it hadn't been used in several hours)	
+**warmup** = binary, whether the espresso machine had to "warm up" before dispensing coffee (i.e. if it hadn't been used in several hours).
 
 **X** = notes, comments	
+
+# Anticipated FAQ
+
+**What do the red points in the figures represent?**
+
+The red points indicate times where the machine had to warm up before dispensing coffee.
