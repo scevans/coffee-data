@@ -2,7 +2,7 @@
 ### How does the espresso machine vary in the volume of
 ### coffee it dispenses for a single "large" cup?
 
-setwd("/home/sam/Dropbox")
+setwd("path to file")
 library(ggplot2)
 df <- read.csv("coffee-data.csv")
 
