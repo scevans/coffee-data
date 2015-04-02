@@ -58,7 +58,9 @@ plot <- plot +
 # add a layer that highlights data points where espresso machine 
 # had to "warm up" before dispensing coffee
 plot <- plot +
-  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5)
+  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+  geom_text(aes(x=mean(df$duration)-5,y=min(df$volume),label="(machine warmup before dispensed)"),
+           hjust=0,vjust=0.5,color="red",size=4)
 
 # print plot in R window
 plot
@@ -97,7 +99,9 @@ vol.workday <- vol.workday +
 # add layer highlighting points where espresso machine needed to
 # "warm up" before dispensing coffee
 vol.workday <- vol.workday +
-  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5)
+  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+  geom_text(aes(x="Sat-Sun", y=max(df$volume)+10, label="(machine warmup before dispensed)"),
+            hjust=1,vjust=1,size=4,color="red")
 
 # print plot in R window
 vol.workday
@@ -141,7 +145,7 @@ lm_eqn <- function(df)
 n.df <- data.frame(n.text, x=min(df$time.minutes), y=0.87*max(df$volume))
 
 # generate plot of volume vs. time of day
-plot <- ggplot(df, aes(time.minutes, volume)) +
+plot.time <- ggplot(df, aes(time.minutes, volume)) +
   geom_point() +
   stat_smooth(method="lm") +
   xlab("time of day (minute)") +
@@ -150,7 +154,7 @@ plot <- ggplot(df, aes(time.minutes, volume)) +
   theme_bw()
 
 # add regression equation to plot
-plot <- plot + 
+plot.time <- plot.time + 
   geom_text(data=n.df, aes(x,y,label=n.text),parse=TRUE,hjust=0,vjust=0,size=5) +
   geom_text(data=rsq.df, aes(x,y,label=rsq.text),parse=TRUE,hjust=0,vjust=0,size=5) +
   geom_text(aes(x=min(df$time.minutes),y=0.94*max(df$volume),label=lm_eqn(df)),parse=TRUE,hjust=0,vjust=0,size=5)
@@ -161,15 +165,17 @@ plot <- plot +
 
 # add a layer that highlights data points where espresso machine 
 # had to "warm up" before dispensing coffee
-plot <- plot +
-  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5)
+plot.time <- plot.time +
+  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5)+
+  geom_text(aes(x=min(df$time.minutes),y=max(df$volume),label="(machine warmup before dispensed)"),
+            hjust=0,vjust=0.5,color="red",size=4)
 
 # print plot in R window
-plot
+plot.time
 
 # save plot directly to file as a .jpeg
 jpeg("coffee-volume-vs-time-of-day.jpeg", width=7, height=5, units="in", res=300)
-print(plot)
+print(plot.time)
 dev.off()
 }
 
