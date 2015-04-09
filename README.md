@@ -1,5 +1,4 @@
-# coffee-data
-Espresso machine output
+# Espresso machine output variation
 
 The UBC Biodiversity Research Centre has a wonderful coffee co-op whereby students, faculty and staff can purchase coffee in-house for a minimal price. The heart of this operation is the espresso machine. Well, the heart is actually [Andrew MacDonald](https://github.com/aammd) who [singlehandedly runs the coffee co-op](https://github.com/aammd/CoffeeCoop), but anyway. Patrons can select "large", "medium", or "small" pulls depending on whether they desire a fuller cup or a single shot.
 
