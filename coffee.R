@@ -72,6 +72,7 @@ dev.off()
 }
 
 
+
 ################################
 ### Distributions of volume dispensed: weekdays vs. weekends
 {
@@ -111,6 +112,7 @@ jpeg("coffee-volume-by-workday.jpeg", width=7, height=5, units="in", res=300)
 print(vol.workday)
 dev.off()
 }
+
 
 
 ################################
@@ -181,3 +183,70 @@ dev.off()
 
 
 
+################################
+### Volume vs. duration (duration of coffee dispensation)
+### EXCLUDING instances where machine had to warm up
+{
+  # subset df by removing machine warmup rows
+  # (this is a quick-and-dirty way, and not an advisable habit for handling data)
+  df <- df[df$warmup%in%"no",]
+  
+  # recalculate sample size
+  n <- length(df$duration)
+  # label to print sample size in subsequent plot
+  n.text <- paste("n == ", n)
+  # data.frame of sample size label and coordinates
+  # at which to print it on the plot
+  n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
+  
+  # calculate R-squared value
+  rsq <- signif(summary(lm(df$volume ~ df$duration))$r.squared, digits=3)
+  # make a label to print R-squared value in subsequent plot
+  rsq.text <- paste("R^2 == ",rsq)
+  # make a data.frame of R-squared value label and coordinates
+  # at which to print it on the plot
+  rsq.df <- data.frame(rsq.text,x=min(df$duration),y=0.9*max(df$volume))
+  
+  # function to extract regression equation
+  lm_eqn <- function(df)
+  {
+    m <- lm(df$volume ~ df$duration)
+    eq <- substitute(y == a + b*x, 
+                     list(a = format(coef(m)[1], digits = 2), 
+                          b = format(coef(m)[2], digits = 2)))
+    as.character(as.expression(eq))                 
+  }
+  
+  # generate plot w/ simple linear regression overlayed
+  plot.no.warmup <- ggplot(df, aes(duration, volume)) +
+    geom_point() +
+    stat_smooth(method="lm") +
+    xlab("duration of coffee dispensation (seconds)") +
+    ylab("volume of coffee (ml)") +
+    theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
+    theme_bw()
+  
+  # add regression equation to plot
+  plot.no.warmup <- plot.no.warmup + 
+    geom_text(data=n.df, aes(x,y,label=n.text),parse=TRUE,hjust=0,vjust=0,size=5) +
+    geom_text(data=rsq.df, aes(x,y,label=rsq.text),parse=TRUE,hjust=0,vjust=0,size=5) +
+    geom_text(aes(x=min(df$duration),y=0.94*max(df$volume),label=lm_eqn(df)),parse=TRUE,hjust=0,vjust=0,size=5)
+  
+  # add a layer that highlights the last data point recorded
+  #plot <- plot +
+  #  geom_point(data=df[length(df$duration),],color="red",size=2.5)
+  
+  # add a layer that highlights data points where espresso machine 
+  # had to "warm up" before dispensing coffee
+  plot.no.warmup <- plot.no.warmup +
+    geom_text(aes(x=mean(df$duration)-5,y=min(df$volume),label="(machine warmup data points removed)"),
+              hjust=0,vjust=0.5,color="blue",size=4)
+  
+  # print plot in R window
+  plot.no.warmup
+  
+  # save plot directly to file as a .jpeg
+  jpeg("coffee-volume-vs-duration-excluding-warmup-data.jpeg", width=7, height=5, units="in", res=300)
+  print(plot.no.warmup)
+  dev.off()
+}
