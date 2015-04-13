@@ -228,7 +228,7 @@ dev.off()
   
   # add regression equation to plot
   plot.no.warmup <- plot.no.warmup + 
-    geom_text(data=n.df, aes(x,y,label=n.text),parse=TRUE,hjust=0,vjust=0,size=5) +
+    geom_text(data=n.df, aes(x,y,label=n.text),parse=TRUE,hjust=0,vjust=0,size=5,color="blue") +
     geom_text(data=rsq.df, aes(x,y,label=rsq.text),parse=TRUE,hjust=0,vjust=0,size=5) +
     geom_text(aes(x=min(df$duration),y=0.94*max(df$volume),label=lm_eqn(df)),parse=TRUE,hjust=0,vjust=0,size=5)
   
