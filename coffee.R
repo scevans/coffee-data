@@ -111,7 +111,7 @@ vol.workday <- vol.workday +
   geom_text(aes(x="Sat-Sun", y=max(df$volume)+10, label="(machine warmup before dispensed)"),
             hjust=1,vjust=1,size=4,color="red") +
   geom_text(aes(x="Sat-Sun", y=max(df$volume)+4, label="(median)"),
-          hjust=0.5,vjust=1,size=4,color="blue")
+          hjust=1,vjust=1,size=4,color="blue")
 
 # print plot in R window
 vol.workday
