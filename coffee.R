@@ -78,10 +78,17 @@ dev.off()
 {
 df$workday <- factor(df$workday)
 
-# generate violin plot with points overlayed
+# median volumes for weekday and weekend categories
+med.week <- median(df$volume[df$workday%in%"Mon-Fri"])
+med.wkend <- median(df$volume[df$workday%in%"Sat-Sun"])
+
+# generate violin-and-boxplot plot with points overlayed
 vol.workday <- ggplot(df, aes(workday, volume)) +
   geom_violin() +
   geom_point() +
+  # plot points representing median volumes for weekdays and weekends
+  geom_point(aes(x="Mon-Fri",y=med.week),color="blue",size=2.5) +
+  geom_point(aes(x="Sat-Sun",y=med.wkend),color="blue",size=2.5) +
   xlab("time of the week") +
   ylab("volume of coffee (ml)") +
   theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
@@ -102,7 +109,9 @@ vol.workday <- vol.workday +
 vol.workday <- vol.workday +
   geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
   geom_text(aes(x="Sat-Sun", y=max(df$volume)+10, label="(machine warmup before dispensed)"),
-            hjust=1,vjust=1,size=4,color="red")
+            hjust=1,vjust=1,size=4,color="red") +
+  geom_text(aes(x="Sat-Sun", y=max(df$volume)+4, label="(median)"),
+          hjust=0.5,vjust=1,size=4,color="blue")
 
 # print plot in R window
 vol.workday
@@ -170,7 +179,7 @@ plot.time <- plot.time +
 plot.time <- plot.time +
   geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5)+
   geom_text(aes(x=min(df$time.minutes),y=max(df$volume),label="(machine warmup before dispensed)"),
-            hjust=0,vjust=0.5,color="red",size=4)
+            hjust=0,vjust=1,color="red",size=4)
 
 # print plot in R window
 plot.time
