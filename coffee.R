@@ -85,7 +85,8 @@ med.wkend <- median(df$volume[df$workday%in%"Sat-Sun"])
 # generate violin-and-boxplot plot with points overlayed and jittered to better reflect sample size
 vol.workday <- ggplot(df, aes(workday, volume)) +
   geom_violin() +
-  geom_point(position=position_jitter(width=0.1,height=0)) +
+  geom_point() +
+  #geom_point(position=position_jitter(width=0.1,height=0)) +
   # plot points representing median volumes for weekdays and weekends
   geom_point(aes(x="Mon-Fri",y=med.week),color="blue",size=2.5) +
   geom_point(aes(x="Sat-Sun",y=med.wkend),color="blue",size=2.5) +
