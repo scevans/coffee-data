@@ -84,8 +84,16 @@ med.wkend <- median(df$volume[df$workday%in%"Sat-Sun"])
 
 # generate violin-and-boxplot plot with points overlayed and jittered to better reflect sample size
 vol.workday <- ggplot(df, aes(workday, volume)) +
-  geom_violin() +
-  geom_point() +
+  geom_violin(color="white", fill="gray", alpha=0.85)
+
+# add layer highlighting points where espresso machine needed to
+# "warm up" before dispensing coffee
+vol.workday <- vol.workday +
+  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+  geom_text(aes(x="Sat-Sun", y=max(df$volume)+10, label="(machine warmup before dispensed)"),
+            hjust=1,vjust=1,size=4,color="red") +
+  geom_text(aes(x="Sat-Sun", y=max(df$volume)+4, label="(median)"),
+            hjust=1,vjust=1,size=4,color="blue") +
   #geom_point(position=position_jitter(width=0.1,height=0)) +
   # plot points representing median volumes for weekdays and weekends
   geom_point(aes(x="Mon-Fri",y=med.week),color="blue",size=2.5) +
@@ -104,15 +112,6 @@ vol.workday <- vol.workday +
   geom_text(aes(x="Sat-Sun",y=max(df$volume)+15,
                 label=paste("n == ", length(df$workday[which(df$workday%in%"Sat-Sun")]))),
             parse=TRUE,hjust=0.5,vjust=0,size=5)
-
-# add layer highlighting points where espresso machine needed to
-# "warm up" before dispensing coffee
-vol.workday <- vol.workday +
-  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
-  geom_text(aes(x="Sat-Sun", y=max(df$volume)+10, label="(machine warmup before dispensed)"),
-            hjust=1,vjust=1,size=4,color="red") +
-  geom_text(aes(x="Sat-Sun", y=max(df$volume)+4, label="(median)"),
-          hjust=1,vjust=1,size=4,color="blue")
 
 # print plot in R window
 vol.workday
