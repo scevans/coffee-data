@@ -65,4 +65,4 @@ duration,height,volume,rate,day,date,time,workday,warmup,notes
 47.35,45,193.5321075,4.0872673178,wed,15 Apr 2015,15:10,Mon-Fri,no,
 43.42,38,163.427113,3.763867181,fri,17 Apr 2015,13:10,Mon-Fri,no,
 44.38,44,189.231394,4.2638890041,fri,17 Apr 2015,15:20,Mon-Fri,no,
-40.66,35,150.5249725,3.7020406419,sat,18 Apr 2015,14:10,Mon-Fri,yes,
+40.66,35,150.5249725,3.7020406419,sat,18 Apr 2015,14:10,Sat-Sun,yes,
