@@ -123,73 +123,60 @@ dev.off()
 }
 
 
-
 ################################
-### Volume vs. time of day
+### Distributions of volume dispensed by day
 {
-library(plyr)
-
-# convert HH:MM to numeric time (minutes)
-df$time <- as.character(df$time) # converts from factor to character
-df$time.minutes <- as.numeric(ldply(strsplit(df$time, ":"))[[1]])*60 + 
-  as.numeric(ldply(strsplit(df$time, ":"))[[2]])
-
-# calculate R-squared value for volume ~ time of day
-rsq <- signif(summary(lm(df$volume ~ df$time.minutes))$r.squared, digits=3)
-# make a label to print R-squared value in subsequent plot
-rsq.text <- paste("R^2 == ",rsq)
-# make a data.frame of R-squared value label and coordinates
-# at which to print it on the plot
-rsq.df <- data.frame(rsq.text,x=min(df$time.minutes),y=0.9*max(df$volume))
-
-# function to extract regression equation
-lm_eqn <- function(df)
-{
-  m <- lm(df$volume ~ df$time.minutes)
-  eq <- substitute(y == a + b*x, 
-                   list(a = format(coef(m)[1], digits = 2), 
-                        b = format(coef(m)[2], digits = 2)))
-  as.character(as.expression(eq))                 
+  df$day <- factor(df$day,levels=c("Mon","Tue","Wed","Thu","Fri","Sat","Sun"))
+    
+    
+  median.by.day <- data.frame(c("Mon","Tue","Wed","Thu","Fri","Sat","Sun"),
+                              c(0,0,0,0,0,0,0),
+                              c(0,0,0,0,0,0,0))
+  
+  names(median.by.day) <- c("day", "median.volume", "n")
+  
+  for (i in 1:7)
+  {
+    median.by.day$median.volume[i] <- median(df$volume[df$day%in%median.by.day$day[i]])
+    median.by.day$n[i] <- length(df$volume[df$day%in%median.by.day$day[i]])
+  }
+  
+  # generate violin-and-boxplot plot with points overlayed and jittered to better reflect sample size
+  vol.day <- ggplot(df, aes(day, volume)) +
+    geom_violin(color="white", fill="gray", alpha=0.85) +
+    geom_point()
+  
+  # add layer highlighting points where espresso machine needed to
+  # "warm up" before dispensing coffee
+  vol.day <- vol.day +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_text(aes(x="Sat", y=max(df$volume)+16, label="(machine warmup before dispensed)"),
+              hjust=1,vjust=1,size=4,color="red") +
+    geom_text(aes(x="Tue", y=max(df$volume)+16, label="(median)"),
+              hjust=1,vjust=1,size=4,color="blue") +
+    #geom_point(position=position_jitter(width=0.1,height=0)) +
+    # plot points representing median volumes for weekdays and weekends
+    geom_point(data=median.by.day, aes(day,median.volume),color="blue",size=2.5) +
+    xlab("day of the week") +
+    ylab("volume of coffee (ml)") +
+    theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
+    coord_cartesian(ylim=c(min(df$volume)-5,max(df$volume)+20)) +
+    theme_bw()
+  
+  # add sample sizes for weekdays and weekends
+  vol.day <- vol.day +
+    geom_text(data=median.by.day, aes(day,y=max(df$volume)+4),
+                  label=paste("(", median.by.day$n, ")", sep=""),
+              parse=TRUE,hjust=0.5,vjust=0,size=4)
+  
+  # print plot in R window
+  vol.day
+  
+  # save plot to file as .jpeg
+  jpeg("coffee-volume-by-day.jpeg", width=8, height=5, units="in", res=300)
+  print(vol.day)
+  dev.off()
 }
-
-# but wait, we need new plotting coordinates for n that correspond to the x range
-n.df <- data.frame(n.text, x=min(df$time.minutes), y=0.87*max(df$volume))
-
-# generate plot of volume vs. time of day
-plot.time <- ggplot(df, aes(time.minutes, volume)) +
-  geom_point() +
-  stat_smooth(method="lm") +
-  xlab("time of day (minute)") +
-  ylab("volume of coffee (ml)") +
-  theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
-  theme_bw()
-
-# add regression equation to plot
-plot.time <- plot.time + 
-  geom_text(data=n.df, aes(x,y,label=n.text),parse=TRUE,hjust=0,vjust=0,size=5) +
-  geom_text(data=rsq.df, aes(x,y,label=rsq.text),parse=TRUE,hjust=0,vjust=0,size=5) +
-  geom_text(aes(x=min(df$time.minutes),y=0.94*max(df$volume),label=lm_eqn(df)),parse=TRUE,hjust=0,vjust=0,size=5)
-
-# add a layer that highlights the last data point recorded
-#plot <- plot +
-#  geom_point(data=df[length(df$duration),],color="red",size=2.5)
-
-# add a layer that highlights data points where espresso machine 
-# had to "warm up" before dispensing coffee
-plot.time <- plot.time +
-  geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5)+
-  geom_text(aes(x=min(df$time.minutes),y=max(df$volume),label="(machine warmup before dispensed)"),
-            hjust=0,vjust=1,color="red",size=4)
-
-# print plot in R window
-plot.time
-
-# save plot directly to file as a .jpeg
-jpeg("coffee-volume-vs-time-of-day.jpeg", width=7, height=5, units="in", res=300)
-print(plot.time)
-dev.off()
-}
-
 
 
 ################################
