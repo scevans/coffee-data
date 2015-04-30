@@ -41,7 +41,7 @@ plot <- ggplot(df, aes(duration, volume)) +
   geom_point() +
   stat_smooth(method="lm") +
   xlab("duration of coffee dispensation (seconds)") +
-  ylab("volume of coffee (ml)") +
+  ylab("volume of one large cup (ml)") +
   theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
   theme_bw()
 
@@ -99,7 +99,7 @@ vol.workday <- vol.workday +
   geom_point(aes(x="Mon-Fri",y=med.week),color="blue",size=2.5) +
   geom_point(aes(x="Sat-Sun",y=med.wkend),color="blue",size=2.5) +
   xlab("time of the week") +
-  ylab("volume of coffee (ml)") +
+  ylab("volume of one large cup (ml)") +
   theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
   coord_cartesian(ylim=c(min(df$volume)-5,max(df$volume)+30)) +
   theme_bw()
@@ -158,7 +158,7 @@ dev.off()
     # plot points representing median volumes for weekdays and weekends
     geom_point(data=median.by.day, aes(day,median.volume),color="blue",size=2.5) +
     xlab("day of the week") +
-    ylab("volume of coffee (ml)") +
+    ylab("volume of one large cup (ml)") +
     theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
     coord_cartesian(ylim=c(min(df$volume)-5,max(df$volume)+20)) +
     theme_bw()
@@ -218,7 +218,7 @@ dev.off()
     geom_point() +
     stat_smooth(method="lm") +
     xlab("duration of coffee dispensation (seconds)") +
-    ylab("volume of coffee (ml)") +
+    ylab("volume of one large cup (ml)") +
     theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
     theme_bw()
   
