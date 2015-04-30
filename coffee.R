@@ -66,7 +66,7 @@ plot <- plot +
 plot
 
 # save plot directly to file as a .jpeg
-jpeg("coffee-volume-vs-duration.jpeg", width=7, height=5, units="in", res=300)
+jpeg("coffee-volume-vs-duration-all.jpeg", width=7, height=5, units="in", res=300)
 print(plot)
 dev.off()
 }
@@ -150,10 +150,12 @@ dev.off()
   # "warm up" before dispensing coffee
   vol.day <- vol.day +
     geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
-    geom_text(aes(x="Sat", y=max(df$volume)+16, label="(machine warmup before dispensed)"),
+    geom_text(aes(x="Sun", y=max(df$volume)+16, label="(machine warmup before dispensed)"),
               hjust=1,vjust=1,size=4,color="red") +
-    geom_text(aes(x="Tue", y=max(df$volume)+16, label="(median)"),
+    geom_text(aes(x="Thu", y=max(df$volume)+16, label="(median)"),
               hjust=1,vjust=1,size=4,color="blue") +
+    geom_text(aes(x="Tue", y=max(df$volume)+16, label=paste("n = ", length(df$volume), sep="")),
+              hjust=0,vjust=1,size=4) +
     #geom_point(position=position_jitter(width=0.1,height=0)) +
     # plot points representing median volumes for weekdays and weekends
     geom_point(data=median.by.day, aes(day,median.volume),color="blue",size=2.5) +
@@ -175,6 +177,45 @@ dev.off()
   # save plot to file as .jpeg
   jpeg("coffee-volume-by-day.jpeg", width=8, height=5, units="in", res=300)
   print(vol.day)
+  dev.off()
+}
+
+
+################################
+### Rate vs. date
+{
+  # add a numeric variable of days of the year (for x-axis)
+  date.to.num <- read.csv("date-to-numeric.csv")
+  df$day.yr <- 0  
+  for (i in 1:length(df$date))
+  {
+    df$day.yr[i] <- date.to.num$day.yr[which(date.to.num$date%in%df$date[i])]
+  }
+  #df$day.yr <- as.numeric(df$day.yr)
+  
+  rate.date <- ggplot(df, aes(day.yr, rate)) +
+    geom_point() +
+    geom_hline(yintercept=mean(df$rate), linetype="dashed") +
+    stat_smooth(method="loess") +
+    xlab("day of the year") +
+    ylab("rate of coffee dispensation (ml/second)") +
+    scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7))) +
+    theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
+    theme_bw()
+  
+  rate.date <- rate.date +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_text(aes(x=64,y=2.7,label="(machine warmup before dispensed)"),
+              hjust=0,vjust=0.5,color="red",size=4) +
+    geom_text(aes(x=64,y=2.8,label="(dashed line indicates mean rate)"),
+              hjust=0,vjust=0.5,size=4) +
+    geom_text(aes(x=64,y=2.9,label=paste("n = ", length(df$volume), sep="")),
+              hjust=0,vjust=0.5,size=4)
+  
+  rate.date
+  
+  jpeg("coffee-rate-by-date.jpeg", width=8, height=5, units="in", res=300)
+  print(rate.date)
   dev.off()
 }
 
