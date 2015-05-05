@@ -9,6 +9,16 @@ library(ggplot2)
 
 df <- read.csv("coffee-data.csv")
 
+# The ruler I use to measure height (and therefore calculate volume)
+# has a 3 mm length between the zero mark and its end. So, we add 3 
+# to the height...
+df$height <- df$height + 3
+
+# ... and recalculate volume and rate, 
+# so we have more accurate data!
+df$volume <- df$height*(3.1415*37^2)/1000
+df$rate <- df$volume/df$duration
+
 ################################
 ### Volume vs. duration (duration of coffee dispensation)
 {
