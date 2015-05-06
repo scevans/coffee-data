@@ -14,7 +14,7 @@ df <- read.csv("coffee-data.csv")
 # to the height...
 df$height <- df$height + 3
 
-# ... and recalculate volume and rate, 
+# ... and then calculate volume and rate, 
 # so we have more accurate data!
 df$volume <- df$height*(3.1415*37^2)/1000
 df$rate <- df$volume/df$duration
