@@ -19,6 +19,13 @@ df$height <- df$height + 3
 df$volume <- df$height*(3.1415*37^2)/1000
 df$rate <- df$volume/df$duration
 
+# Create a variable indicating whether the coffee was pulled on
+# a weekday ("Mon-Fri") or a weekend ("Sat-Sun")
+for (i in 1:length(df$day))
+{
+  df$workday[i] <- ifelse(df$day[i]%in%"Sat" || df$day[i]%in%"Sun", "Sat-Sun", "Mon-Fri")
+}
+
 ################################
 ### Volume vs. duration (duration of coffee dispensation)
 {
