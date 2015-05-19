@@ -26,6 +26,23 @@ for (i in 1:length(df$day))
   df$workday[i] <- ifelse(df$day[i]%in%"Sat" || df$day[i]%in%"Sun", "Sat-Sun", "Mon-Fri")
 }
 
+# Add a numeric variable of days of the year 
+# (for the x-axis of the rate-by-date and volume-by-date plots)
+date.to.num <- read.csv("date-to-numeric.csv")
+df$day.yr <- 0  
+for (i in 1:length(df$date))
+{
+  df$day.yr[i] <- date.to.num$day.yr[which(date.to.num$date%in%df$date[i])]
+}
+
+# Extract date labels and convert day and month values to character.
+# This way you can later concatenate the two into a single character
+# string separated by "\n" using paste(),
+# so the x-axis text of the rate- and volume-by date plots is less horizontally crowded
+dates.x <- date.to.num[which(date.to.num$day.yr%in%c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7))),]
+dates.x$day.label <- as.character(dates.x$day.label)
+dates.x$month.label <- as.character(dates.x$month.label)
+
 ################################
 ### Volume vs. duration (duration of coffee dispensation)
 {
@@ -203,21 +220,16 @@ dev.off()
 ################################
 ### Rate vs. date
 {
-  # add a numeric variable of days of the year (for x-axis)
-  date.to.num <- read.csv("date-to-numeric.csv")
-  df$day.yr <- 0  
-  for (i in 1:length(df$date))
-  {
-    df$day.yr[i] <- date.to.num$day.yr[which(date.to.num$date%in%df$date[i])]
-  }
-  
+  # create plot of rate vs. date
   rate.date <- ggplot(df, aes(day.yr, rate)) +
     geom_point() +
     geom_hline(yintercept=mean(df$rate), linetype="dashed") +
     stat_smooth(method="loess") +
-    xlab("day of the year") +
+    xlab("date") +
     ylab("rate of coffee dispensation (ml/second)") +
-    scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7))) +
+    # scale x-axis text to weekly ticks, print dates as two lines of text
+    scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7)),
+                       labels=paste(dates.x$day.label,"\n",dates.x$month.label,sep="")) +
     theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
     theme_bw()
   
@@ -237,6 +249,37 @@ dev.off()
   dev.off()
 }
 
+
+################################
+### Volume vs. date
+{
+  volume.date <- ggplot(df, aes(day.yr, volume)) +
+    geom_point() +
+    geom_hline(yintercept=mean(df$volume), linetype="dashed") +
+    stat_smooth(method="loess") +
+    xlab("date") +
+    ylab("volume of a single large cup (ml)") +
+    # scale x-axis text to weekly ticks, print dates as two lines of text
+    scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7)),
+                       labels=paste(dates.x$day.label,"\n",dates.x$month.label,sep="")) +
+    theme(axis.text=element_text(size=4, angle=45), axis.title=element_text(size=5)) +
+    theme_bw()
+  
+  volume.date <- volume.date +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_text(aes(x=64,y=min(df$volume)-15,label="(machine warmup before dispensed)"),
+              hjust=0,vjust=0.5,color="red",size=4) +
+    geom_text(aes(x=64,y=min(df$volume)-10,label="(dashed line indicates mean volume)"),
+              hjust=0,vjust=0.5,size=4) +
+    geom_text(aes(x=64,y=min(df$volume)-5,label=paste("n = ", length(df$volume), sep="")),
+              hjust=0,vjust=0.5,size=4)
+  
+  volume.date
+  
+  jpeg("coffee-volume-by-date.jpeg", width=8, height=5, units="in", res=300)
+  print(volume.date)
+  dev.off()
+}
 
 ################################
 ### Volume vs. duration (duration of coffee dispensation)
