@@ -95,8 +95,8 @@ plot <- plot +
 # had to "warm up" before dispensing coffee
 plot <- plot +
   geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
-  geom_text(aes(x=mean(df$duration)-5,y=min(df$volume),label="(machine warmup before dispensed)"),
-           hjust=0,vjust=0.5,color="red",size=4)
+  geom_text(aes(x=min(df$duration),y=0.98*max(df$volume),label="(machine warmup\nbefore dispensed)"),
+           hjust=0,vjust=0,color="red",size=4)
 
 # print plot in R window
 plot
