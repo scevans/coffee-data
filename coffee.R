@@ -224,6 +224,7 @@ dev.off()
   rate.date <- ggplot(df, aes(day.yr, rate)) +
     geom_point() +
     geom_hline(yintercept=mean(df$rate), linetype="dashed") +
+    geom_vline(xintercept=117, linetype="dashed", color="darkgreen") +
     stat_smooth(method="loess") +
     xlab("date") +
     ylab("rate of coffee dispensation (ml/second)") +
@@ -235,12 +236,18 @@ dev.off()
   
   rate.date <- rate.date +
     geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
-    geom_text(aes(x=64,y=2.7,label="(machine warmup before dispensed)"),
+    geom_text(aes(x=64,y=min(df$rate)-0.3,label="(machine warmup before dispensed)"),
               hjust=0,vjust=0.5,color="red",size=4) +
-    geom_text(aes(x=64,y=2.8,label="(dashed line indicates mean rate)"),
+    geom_text(aes(x=64,y=min(df$rate)-0.2,label="(dashed line indicates mean rate)"),
               hjust=0,vjust=0.5,size=4) +
-    geom_text(aes(x=64,y=2.9,label=paste("n = ", length(df$volume), sep="")),
-              hjust=0,vjust=0.5,size=4)
+    geom_text(aes(x=64,y=min(df$rate)-0.1,label=paste("n = ", length(df$volume), sep="")),
+              hjust=0,vjust=0.5,size=4) +
+    # spring term text
+    geom_text(aes(x=104,y=min(df$rate)-0.3,label="<-- spring term"),
+              hjust=0,vjust=0.5,color="darkgreen",size=4) +
+    # summer term text
+    geom_text(aes(x=118,y=min(df$rate)-0.3,label="summer term -->"),
+              hjust=0,vjust=0.5,color="darkgreen",size=4)
   
   rate.date
   
@@ -256,6 +263,7 @@ dev.off()
   volume.date <- ggplot(df, aes(day.yr, volume)) +
     geom_point() +
     geom_hline(yintercept=mean(df$volume), linetype="dashed") +
+    geom_vline(xintercept=117, linetype="dashed", color="darkgreen") +
     stat_smooth(method="loess") +
     xlab("date") +
     ylab("volume of a single large cup (ml)") +
@@ -272,7 +280,13 @@ dev.off()
     geom_text(aes(x=64,y=min(df$volume)-10,label="(dashed line indicates mean volume)"),
               hjust=0,vjust=0.5,size=4) +
     geom_text(aes(x=64,y=min(df$volume)-5,label=paste("n = ", length(df$volume), sep="")),
-              hjust=0,vjust=0.5,size=4)
+              hjust=0,vjust=0.5,size=4) +
+    # spring term text
+    geom_text(aes(x=104,y=min(df$volume)-15,label="<-- spring term"),
+              hjust=0,vjust=0.5,color="darkgreen",size=4) +
+    # summer term text
+    geom_text(aes(x=118,y=min(df$volume)-15,label="summer term -->"),
+              hjust=0,vjust=0.5,color="darkgreen",size=4)
   
   volume.date
   
