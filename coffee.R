@@ -157,7 +157,7 @@ vol.workday <- vol.workday +
   # plot points representing median volumes for weekdays and weekends
   geom_point(data=df.text, aes(workday,median), color="blue",size=2.5) +
   #geom_point(aes(x="Sat-Sun",y=med.wkend),color="blue",size=2.5) +
-  xlab("time of the week (red = machine warmup before dispensed; blue = medians") +
+  xlab("time of the week (red = machine warmup before dispensed; blue = medians)") +
   ylab("volume of one large cup (ml)") +
   theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
   coord_cartesian(ylim=c(min(df$volume)-5,max(df$volume)+12)) +
