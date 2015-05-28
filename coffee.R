@@ -291,10 +291,10 @@ dev.off()
     geom_text(aes(x=64,y=min(df$rate)-0.1,label=paste("n = ", length(df$volume), sep="")),
               hjust=0,vjust=0.5,size=4) +
     # spring term text
-    geom_text(aes(x=104,y=min(df$rate)-0.3,label="<-- spring term"),
-              hjust=0,vjust=0.5,color="darkgreen",size=4) +
+    geom_text(aes(x=116,y=max(df$rate)+0.1,label="<-- spring term"),
+              hjust=1,vjust=0.5,color="darkgreen",size=4) +
     # summer term text
-    geom_text(aes(x=118,y=min(df$rate)-0.3,label="summer term -->"),
+    geom_text(aes(x=118,y=max(df$rate)+0.1,label="summer term -->"),
               hjust=0,vjust=0.5,color="darkgreen",size=4)
   
   rate.date
