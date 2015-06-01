@@ -314,7 +314,7 @@ dev.off()
     geom_vline(xintercept=117, linetype="dashed", color="darkgreen") +
     stat_smooth(method="loess") +
     xlab("date") +
-    ylab("volume of a single large cup (ml)") +
+    ylab("volume of one large cup (ml)") +
     # scale x-axis text to weekly ticks, print dates as two lines of text
     scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7)),
                        labels=paste(dates.x$day.label,"\n",dates.x$month.label,sep="")) +
