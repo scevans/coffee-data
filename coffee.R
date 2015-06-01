@@ -279,6 +279,7 @@ dev.off()
     # scale x-axis text to weekly ticks, print dates as two lines of text
     scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7)),
                        labels=paste(dates.x$day.label,"\n",dates.x$month.label,sep="")) +
+    coord_cartesian(xlim=c(min(df$day.yr)-1,max(df$day.yr)+1)) +
     theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
     theme_bw()
   
@@ -318,6 +319,7 @@ dev.off()
     # scale x-axis text to weekly ticks, print dates as two lines of text
     scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7)),
                        labels=paste(dates.x$day.label,"\n",dates.x$month.label,sep="")) +
+    coord_cartesian(xlim=c(min(df$day.yr)-1,max(df$day.yr)+1)) +
     theme(axis.text=element_text(size=4, angle=45), axis.title=element_text(size=5)) +
     theme_bw()
   
