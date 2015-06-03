@@ -419,8 +419,8 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
   # add a layer that highlights data points where espresso machine 
   # had to "warm up" before dispensing coffee
   plot.no.warmup <- plot.no.warmup +
-    geom_text(aes(x=mean(df.no$duration)-5,y=min(df.no$volume),label="(machine warmup data points removed)"),
-              hjust=0,vjust=0.5,color="blue",size=4)
+    geom_text(aes(x=min(df$duration),y=0.98*max(df$volume),label="(machine warmup\ndata points removed)"),
+              hjust=0,vjust=0,color="blue",size=4)
   
   # print plot in R window
   plot.no.warmup
