@@ -57,32 +57,36 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
   # create plot of rate vs. date
   rate.date <- ggplot(df, aes(day.yr, rate)) +
     geom_point() +
-    geom_hline(yintercept=mean(df$rate), linetype="dashed") +
-    geom_vline(xintercept=117, linetype="dashed", color="darkgreen") +
-    stat_smooth(method="loess") +
+    geom_hline(yintercept=mean(df$rate), linetype="dashed", color="blue") +
+    annotate(geom="rect", 
+             xmin=min(df$day.yr)-1, xmax=117, 
+             ymin=min(df$rate)-0.4, ymax=max(df$rate)+0.2, 
+             alpha=0.1, fill="orange") +
+    stat_smooth(method="loess", color="black") +
     xlab("date") +
     ylab("rate of coffee dispensation (ml/second)") +
     # scale x-axis text to weekly ticks, print dates as two lines of text
     scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7)),
                        labels=paste(dates.x$day.label,"\n",dates.x$month.label,sep="")) +
-    coord_cartesian(xlim=c(min(df$day.yr)-1,max(df$day.yr)+1)) +
+    coord_cartesian(xlim=c(min(df$day.yr)-1,max(df$day.yr)+1),
+                    ylim=c(min(df$rate)-0.4,max(df$rate)+0.2)) +
     theme(axis.text=element_text(size=4), axis.title=element_text(size=5)) +
     theme_bw()
   
   rate.date <- rate.date +
-    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2) +
     geom_text(aes(x=64,y=min(df$rate)-0.3,label="(machine warmup before dispensed)"),
               hjust=0,vjust=0.5,color="red",size=4) +
     geom_text(aes(x=64,y=min(df$rate)-0.2,label="(dashed line indicates mean rate)"),
-              hjust=0,vjust=0.5,size=4) +
+              hjust=0,vjust=0.5,size=4,color="blue") +
     geom_text(aes(x=64,y=min(df$rate)-0.1,label=paste("n = ", length(df$volume), sep="")),
               hjust=0,vjust=0.5,size=4) +
     # spring term text
     geom_text(aes(x=116,y=max(df$rate)+0.1,label="<-- spring term"),
-              hjust=1,vjust=0.5,color="darkgreen",size=4) +
+              hjust=1,vjust=0.5,size=4) +
     # summer term text
     geom_text(aes(x=118,y=max(df$rate)+0.1,label="summer term -->"),
-              hjust=0,vjust=0.5,color="darkgreen",size=4)
+              hjust=0,vjust=0.5,size=4)
   
   # view plot in R window
   rate.date
@@ -99,32 +103,36 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
 {
   volume.date <- ggplot(df, aes(day.yr, volume)) +
     geom_point() +
-    geom_hline(yintercept=mean(df$volume), linetype="dashed") +
-    geom_vline(xintercept=117, linetype="dashed", color="darkgreen") +
-    stat_smooth(method="loess") +
+    geom_hline(yintercept=mean(df$volume), linetype="dashed", color="blue") +
+    annotate(geom="rect", 
+             xmin=min(df$day.yr)-1, xmax=117, 
+             ymin=min(df$volume)-19, ymax=max(df$volume)+7, 
+             alpha=0.1, fill="orange") +
+    stat_smooth(method="loess", color="black") +
     xlab("date") +
     ylab("volume of one large cup (ml)") +
     # scale x-axis text to weekly ticks, print dates as two lines of text
     scale_x_continuous(breaks=c(seq(from=min(df$day.yr), to=max(df$day.yr), by=7)),
                        labels=paste(dates.x$day.label,"\n",dates.x$month.label,sep="")) +
-    coord_cartesian(xlim=c(min(df$day.yr)-1,max(df$day.yr)+1)) +
+    coord_cartesian(xlim=c(min(df$day.yr)-1,max(df$day.yr)+1),
+                    ylim=c(min(df$volume)-19,max(df$volume)+7)) +
     theme(axis.text=element_text(size=4, angle=45), axis.title=element_text(size=5)) +
     theme_bw()
   
   volume.date <- volume.date +
-    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2) +
     geom_text(aes(x=64,y=min(df$volume)-15,label="(machine warmup before dispensed)"),
               hjust=0,vjust=0.5,color="red",size=4) +
     geom_text(aes(x=64,y=min(df$volume)-10,label="(dashed line indicates mean volume)"),
-              hjust=0,vjust=0.5,size=4) +
+              hjust=0,vjust=0.5,size=4,color="blue") +
     geom_text(aes(x=64,y=min(df$volume)-5,label=paste("n = ", length(df$volume), sep="")),
               hjust=0,vjust=0.5,size=4) +
     # spring term text
     geom_text(aes(x=116,y=max(df$volume)+4,label="<-- spring term"),
-              hjust=1,vjust=0.5,color="darkgreen",size=4) +
+              hjust=1,vjust=0.5,size=4) +
     # summer term text
     geom_text(aes(x=118,y=max(df$volume)+4,label="summer term -->"),
-              hjust=0,vjust=0.5,color="darkgreen",size=4)
+              hjust=0,vjust=0.5,size=4)
   
   # view plot in R window
   volume.date
@@ -184,7 +192,7 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
   # add layer highlighting points where espresso machine needed to
   # "warm up" before dispensing coffee
   vol.day <- vol.day +
-    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2) +
     geom_text(aes(x="Sun", y=max(df$volume)+16, label="(machine warmup before dispensed)"),
               hjust=1,vjust=1,size=4,color="red") +
     geom_text(aes(x="Thu", y=max(df$volume)+16, label="(median)"),
@@ -254,7 +262,7 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
   # add layer highlighting points where espresso machine needed to
   # "warm up" before dispensing coffee
   vol.workday <- vol.workday +
-    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2) +
     #geom_text(data=t, aes(x,y,label=char),parse=TRUE,vjust=0,size=2) +
     #geom_text(aes(x="Sat-Sun", y=max(df$volume)+10, label="(machine warmup before dispensed)"),
     #          hjust=1,vjust=1,size=4,color="red") +
@@ -354,7 +362,7 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
   # add a layer that highlights data points where espresso machine 
   # had to "warm up" before dispensing coffee
   plot <- plot +
-    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2.5) +
+    geom_point(data=df[df$warmup%in%"yes",], color="red", size=2) +
     geom_text(aes(x=min(df$duration),y=0.98*max(df$volume),label="(machine warmup\nbefore dispensed)"),
               hjust=0,vjust=0,color="red",size=4)
   
