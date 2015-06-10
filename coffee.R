@@ -420,7 +420,7 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
   
   # add regression equation to plot
   plot.no.warmup <- plot.no.warmup + 
-    geom_text(data=n.df, aes(x,y,label=n.text),parse=TRUE,hjust=0,vjust=0,size=5,color="blue") +
+    geom_text(data=n.df, aes(x,y,label=n.text),parse=TRUE,hjust=0,vjust=0,size=5,alpha=0.6) +
     geom_text(data=rsq.df, aes(x,y,label=rsq.text),parse=TRUE,hjust=0,vjust=0,size=5) +
     geom_text(aes(x=min(df.no$duration),y=0.94*max(df.no$volume),label=lm_eqn(df.no)),parse=TRUE,hjust=0,vjust=0,size=5)
     
@@ -428,7 +428,7 @@ n.df <- data.frame(n.text, x=min(df$duration), y=0.87*max(df$volume))
   # had to "warm up" before dispensing coffee
   plot.no.warmup <- plot.no.warmup +
     geom_text(aes(x=min(df$duration),y=0.98*max(df$volume),label="(machine warmup\ndata points removed)"),
-              hjust=0,vjust=0,color="blue",size=4)
+              hjust=0,vjust=0,size=4)
   
   # print plot in R window
   plot.no.warmup
